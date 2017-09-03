@@ -21,10 +21,11 @@ import org.openqa.selenium.firefox.FirefoxDriver;
 import org.openqa.selenium.safari.SafariDriver;
 import org.openqa.selenium.OutputType;
 
+import com.google.common.io.Files;
 import com.sun.jna.platform.FileUtils;
 
 public class reusable {
-	
+
 	static BufferedWriter bw = null;
 	static BufferedWriter bw1 = null;
 	static String htmlname;
@@ -47,7 +48,7 @@ public class reusable {
 	static String dataTablePath;
 	static int i;
 	static String browserName;
-	
+
 	Object[][] locator;
 	Object[][] data;
 	Object[][] matrix;
@@ -68,7 +69,7 @@ public class reusable {
 			{
 				sNames.add( xwb.getSheetName(i) );
 			}
-			
+
 			//Iterate through each sheet and retrieves the data and stores it in an arraylist
 			for(String s: sNames)
 			{
@@ -171,26 +172,26 @@ public class reusable {
 		}
 
 	}
-	
-	WebDriver driver;
+
+	static WebDriver driver;
 	public void firefox()
 	{
 		System.setProperty("webdriver.gecko.driver","/Users/abhaskumar/Downloads/geckodriver");
-		
+
 		driver = new FirefoxDriver();
 		driver.get("https://www.amazon.com/");
 	}
 	public void chrome()
 	{
 		System.setProperty("webdriver.chrome.driver","/Users/abhaskumar/Downloads/chromedriver");
-		
+
 		driver = new ChromeDriver();
 		driver.get("https://www.amazon.com/");
 	}
 	public void safari()
 	{
 		System.setProperty("webdriver.safari.driver","/usr/bin/safaridriver");
-		
+
 		driver = new SafariDriver();
 		driver.get("https://www.amazon.com/");
 	}
@@ -238,7 +239,7 @@ public class reusable {
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
 		str_time = dateFormat.format(exec_time);
 		if (Res_type.startsWith("Pass")) {
-	//		String sslPath = screenshot()
+			String sslPath = screenshot(driver);
 			bw.write("<TR COLS=7><TD BGCOLOR=#EEEEEE WIDTH=3%><FONT FACE=VERDANA SIZE=2>"
 					+ (j++)
 					+ "</FONT></TD><TD BGCOLOR=#EEEEEE WIDTH=10%><FONT FACE=VERDANA SIZE=2>"
@@ -251,7 +252,7 @@ public class reusable {
 					+ result + "</FONT></TD></TR>");
 
 		} else if (Res_type.startsWith("Fail")) {
-			
+			String sslPath = screenshot(driver);
 			exeStatus = "Failed";
 			report = 1;
 			bw.write("<TR COLS=7><TD BGCOLOR=#EEEEEE WIDTH=3%><FONT FACE=VERDANA SIZE=2>"
@@ -269,6 +270,16 @@ public class reusable {
 				+ result + "</FONT></TD></TR>");
 
 		} 
+	}
+	public static String screenshot(WebDriver driver) throws IOException
+	{
+		Date exec_time = new Date();
+		DateFormat  dateFormat = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss");
+		String str_time = dateFormat.format(exec_time);
+		String sslPath = "/Users/abhaskumar/Desktop/Report/Screenshot/";
+		File src = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
+		Files.copy(src, new File(sslPath));
+		return sslPath;
 	}
 
 }
